@@ -1,4 +1,5 @@
-# app
+# MathGame App
+Web application for Math Game
 
 ## Project setup
 ```
