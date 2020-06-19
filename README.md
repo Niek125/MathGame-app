@@ -1,4 +1,5 @@
 # MathGame App
+[![CircleCI](https://circleci.com/gh/Niek125/MathGame-app.svg?style=svg)](https://circleci.com/gh/Niek125/MathGame-app)
 Web application for Math Game
 
 ## Project setup
