@@ -2,15 +2,42 @@ version: 2.1
 jobs:
   build:
     docker:
-      - image: circleci/node:8.11.2
+      - image: circleci/node:12.13.0
     parallelism: 1
     working_directory: ~/mathgame/app
     steps:
       - checkout
-      - attach_workspace:
-          at: ~/mathgame/app
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "package.json" }}
+            - v1-dependencies-
       - run: npm install
       - run: npm run build
-      - persist_to_workspace:
-          root: .
-          paths: dist
+      - save_cache:
+          paths:
+            - node_modules
+            - dist
+            - package.json
+          key: v1-dist-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
+  #      - run: npm run test
+
+  deploy:
+    parallelism: 1
+    working_directory: ~/mathgame/app
+    steps:
+      - restore_cache:
+          keys:
+            - v1-dist-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
+      - run:
+          name: show dir
+          command: pwd
+      - run:
+          name: build docker
+          command: docker build -t docker.io/$DOCKER_NAME/MathGame-app:latest .
+      - run:
+          name: docker login
+          command: docker login -u $DOCKER_NAME -p $DOCKER_PASSWORD
+      - run:
+          name: docker push
+          command: docker push docker.io/$DOCKER_NAME/MathGame-app:latest
+
