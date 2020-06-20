@@ -22,6 +22,11 @@ jobs:
   #      - run: npm run test
 
   deploy:
+    parameters:
+      docker-push:
+        type: string
+    requires:
+      - build
     parallelism: 1
     working_directory: ~/mathgame/app
     steps:
@@ -29,15 +34,30 @@ jobs:
           keys:
             - v1-dist-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
       - run:
-          name: show dir
-          command: pwd
-      - run:
           name: build docker
-          command: docker build -t docker.io/$DOCKER_NAME/MathGame-app:latest .
+          command: docker build -t docker.io/$DOCKER_NAME/MathGame-app:<< parameters.docker-push >> .
       - run:
           name: docker login
           command: docker login -u $DOCKER_NAME -p $DOCKER_PASSWORD
       - run:
           name: docker push
-          command: docker push docker.io/$DOCKER_NAME/MathGame-app:latest
+          command: docker push docker.io/$DOCKER_NAME/MathGame-app:<< parameters.docker-push >>
 
+workflows:
+  version: 2
+  build-and-deploy:
+    jobs:
+      - build
+      - deploy:
+          docker-push: latest
+          filters:
+            branches:
+              only:
+                - develop
+                - master
+      - deploy:
+          docker-push: {{ .Environment.CIRCLE_BRANCH }}
+          filters:
+            branches:
+              only:
+                - release/(.*)
