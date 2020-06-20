@@ -34,7 +34,7 @@ jobs:
             - v1-dist-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
       - run:
           name: docker login
-          command: docker login -u $DOCKER_NAME --password-stdin $DOCKER_PASSWORD
+          command: echo "$DOCKER_PASSWORD" | docker login --username $DOCKER_NAME --password-stdin
       - run:
           name: build docker
           command: docker build -t $DOCKER_NAME/MathGame-app:<< parameters.docker-push >> .
