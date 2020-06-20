@@ -59,7 +59,7 @@ workflows:
       - deploy:
           requires:
             - build
-          docker-push: {{ .Environment.CIRCLE_BRANCH }}
+          docker-push: $CIRCLE_BRANCH
           filters:
             branches:
               only:
