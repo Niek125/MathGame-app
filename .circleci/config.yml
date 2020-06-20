@@ -37,10 +37,10 @@ jobs:
           command: docker build -t docker.io/$DOCKER_NAME/MathGame-app:<< parameters.docker-push >> .
       - run:
           name: docker login
-          command: docker login -u $DOCKER_NAME -p $DOCKER_PASSWORD
+          command: docker login -u {{ $DOCKER_NAME }} -p {{ $DOCKER_PASSWORD }}
       - run:
           name: docker push
-          command: docker push docker.io/$DOCKER_NAME/MathGame-app:<< parameters.docker-push >>
+          command: docker push docker.io/{{ $DOCKER_NAME }}/MathGame-app:<< parameters.docker-push >>
 
 workflows:
   version: 2
