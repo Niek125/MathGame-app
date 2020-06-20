@@ -18,6 +18,9 @@ jobs:
             - node_modules
             - dist
             - package.json
+            - public
+            - src
+            - dockerfile
           key: v1-dist-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
   #      - run: npm run test
 
