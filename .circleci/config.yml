@@ -34,7 +34,7 @@ jobs:
             - v1-dist-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
       - run:
           name: build docker
-          command: docker build -t docker.io/$DOCKER_NAME/MathGame-app:<< parameters.docker-push >> .
+          command: docker build -t docker.io/{{ $DOCKER_NAME }}/MathGame-app:<< parameters.docker-push >> .
       - run:
           name: docker login
           command: docker login -u {{ $DOCKER_NAME }} -p {{ $DOCKER_PASSWORD }}
