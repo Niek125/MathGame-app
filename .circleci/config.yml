@@ -22,6 +22,7 @@ jobs:
   #      - run: npm run test
 
   deploy:
+    machine: true
     parameters:
       docker-push:
         type: string
