@@ -29,6 +29,7 @@ jobs:
     parallelism: 1
     working_directory: ~/mathgame/app
     steps:
+      - setup_remote_docker
       - restore_cache:
           keys:
             - v1-dist-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
