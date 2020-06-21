@@ -25,6 +25,7 @@ jobs:
             - public
             - src
             - dockerfile
+            - docker-compose.yml
             - .dockerignore
             - nginx.conf
           key: v1-dist-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
