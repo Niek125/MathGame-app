@@ -69,7 +69,7 @@ workflows:
       - deploy:
           requires:
             - build
-          docker-push: v-0.<< pipeline.id >>
+          docker-push: v-0.<< pipeline.number >>
           filters:
             branches:
               only:
