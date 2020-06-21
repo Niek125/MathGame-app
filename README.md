@@ -5,6 +5,8 @@
 
 Web application for Math Game
 
+v-0.1 -> empty vue project
+
 ## Project setup
 ```
 npm install
