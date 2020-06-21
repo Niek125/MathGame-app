@@ -69,8 +69,8 @@ workflows:
       - deploy:
           requires:
             - build
-          docker-push: $CIRCLE_BRANCH
+          docker-push: v-0.<< pipeline.number >>
           filters:
             branches:
               only:
-                - /^(release\/)
+                - /^(release\/).*/
