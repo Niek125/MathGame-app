@@ -60,7 +60,7 @@ workflows:
           filters:
             branches:
               only:
-                - /^(release\/).*
+                - /^(release\/).*/
       - deploy:
           requires:
             - build
@@ -77,4 +77,4 @@ workflows:
           filters:
             branches:
               only:
-                - /^(release\/).*
+                - /^(release\/).*/
