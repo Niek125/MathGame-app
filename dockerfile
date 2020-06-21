@@ -1,11 +1,11 @@
 FROM node:latest as build-stage
-WORKDIR /mathgame/app
+WORKDIR /app
 COPY package*.json ./
 RUN npm install
 COPY ./ .
 RUN npm run build
 
 FROM nginx as production-stage
-RUN mkdir -p /mathgame/app
+RUN mkdir /app
 COPY --from=build-stage /app/dist /mathgame/app
 COPY nginx.conf /etc/nginx/nginx.conf
