@@ -60,8 +60,17 @@ workflows:
       - deploy:
           requires:
             - build
+          docker-push: latest
+          filters:
+            branches:
+              only:
+                - develop
+                - master
+      - deploy:
+          requires:
+            - build
           docker-push: $CIRCLE_BRANCH
           filters:
             branches:
               only:
-                - /^release\//
+                - ^release\/
