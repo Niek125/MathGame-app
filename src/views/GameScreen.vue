@@ -4,10 +4,9 @@
       <div class="score">{{ score }}</div>
       <div class="answered-wrapper">
         <div
-          class="answered"
           v-for="(data, index) in answered"
           :key="'answered:' + index"
-          :class="data.correct ? 'correct' : 'incorrect'"
+          :class="['answered', data.correct ? 'correct' : 'incorrect']"
         >
           {{ data.text }}
         </div>
@@ -23,7 +22,9 @@
           :key="'answer:' + index"
           :text="data.text"
           :style="'grid-area: answer$index;'"
-          @click.native="answer(questions[questionIndex].question, data.correct)"
+          @click.native="
+            answer(questions[questionIndex].question, data.correct)
+          "
         ></outlined-button>
       </div>
     </div></div
@@ -38,6 +39,24 @@ export default {
     return {
       score: 0,
       questions: [
+        {
+          question: '1 + 1',
+          answers: [
+            { text: '1', correct: false },
+            { text: '2', correct: true },
+            { text: '3', correct: false },
+            { text: '4', correct: false }
+          ]
+        },
+        {
+          question: '1 + 1',
+          answers: [
+            { text: '1', correct: false },
+            { text: '2', correct: true },
+            { text: '3', correct: false },
+            { text: '4', correct: false }
+          ]
+        },
         {
           question: '1 + 1',
           answers: [
@@ -81,10 +100,14 @@ export default {
   },
   methods: {
     answer: function (question, correct) {
-      if(this.answered.length === 3){
+      if (this.answered.length === 10) {
         this.answered.splice(0, 1)
       }
-      this.answered.push({text: question, correct: correct})
+      if (correct) {
+        this.score++
+      }
+      const ans = { text: question, correct: correct }
+      this.answered.push(ans)
 
       if (this.questionIndex >= this.questions.length - 1) {
         alert('end')
