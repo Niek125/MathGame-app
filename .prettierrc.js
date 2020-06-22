@@ -4,5 +4,5 @@ module.exports = {
   singleQuote: true,
   useTabs: false,
   trailingComma: 'none',
-  endOfLine: 'lf'
+  endOfLine: 'crlf'
 }
