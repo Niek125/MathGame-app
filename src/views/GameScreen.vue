@@ -6,7 +6,7 @@
         <div
           v-for="(data, index) in answered"
           :key="'answered:' + index"
-          :class="['answered fade-out', data.correct ? 'correct' : 'incorrect']"
+          :class="['answered', data.correct ? 'correct' : 'incorrect']"
         >
           {{ data.text }}
         </div>
@@ -39,6 +39,24 @@ export default {
     return {
       score: 0,
       questions: [
+        {
+          question: '1 + 1',
+          answers: [
+            { text: '1', correct: false },
+            { text: '2', correct: true },
+            { text: '3', correct: false },
+            { text: '4', correct: false }
+          ]
+        },
+        {
+          question: '1 + 1',
+          answers: [
+            { text: '1', correct: false },
+            { text: '2', correct: true },
+            { text: '3', correct: false },
+            { text: '4', correct: false }
+          ]
+        },
         {
           question: '1 + 1',
           answers: [
@@ -82,14 +100,14 @@ export default {
   },
   methods: {
     answer: function (question, correct) {
-      if (this.answered.length === 3) {
+      if (this.answered.length === 10) {
         this.answered.splice(0, 1)
+      }
+      if (correct) {
+        this.score++
       }
       const ans = { text: question, correct: correct }
       this.answered.push(ans)
-      setTimeout(() => {
-        this.answered.splice(this.answered.indexOf(ans), 1)
-      }, 1900)
 
       if (this.questionIndex >= this.questions.length - 1) {
         alert('end')
@@ -102,48 +120,6 @@ export default {
 </script>
 
 <style scoped>
-.fade-out {
-  animation: fadeOut ease 2s;
-  -webkit-animation: fadeOut ease 2s;
-  -moz-animation: fadeOut ease 2s;
-  -o-animation: fadeOut ease 2s;
-}
-@keyframes fadeOut {
-  0% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 0;
-  }
-}
-
-@-moz-keyframes fadeOut {
-  0% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 0;
-  }
-}
-
-@-webkit-keyframes fadeOut {
-  0% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 0;
-  }
-}
-
-@-o-keyframes fadeOut {
-  0% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 0;
-  }
-}
-
 .score-counter {
   position: absolute;
   top: 0;
