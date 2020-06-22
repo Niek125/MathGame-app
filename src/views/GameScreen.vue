@@ -1,120 +1,49 @@
 <template>
   <div class="flexbox game-screen">
-    <div class="score-counter">
+    <div class="score-counter" v-if="!isFinished">
       <div class="score">{{ score }}</div>
       <div class="answered-wrapper">
         <div
           v-for="(data, index) in answered"
           :key="'answered:' + index"
-          :class="['answered', data.correct ? 'correct' : 'incorrect']"
+          :class="['answered', data.isCorrect ? 'correct' : 'incorrect']"
         >
           {{ data.text }}
         </div>
       </div>
     </div>
-    <div>
+    <div v-if="!isFinished">
       <div class="flexbox question-wrapper">
-        <div class="question">{{ questions[questionIndex].question }}</div>
+        <div class="question">{{ question.text }}</div>
       </div>
       <div class="button-grid">
         <outlined-button
-          v-for="(data, index) in questions[questionIndex].answers"
+          v-for="(data, index) in question.answers"
           :key="'answer:' + index"
           :text="data.text"
           :style="'grid-area: answer$index;'"
           @click.native="
-            answer(questions[questionIndex].question, data.correct)
+            answer({ questionText: question.text, isCorrect: data.isCorrect })
           "
         ></outlined-button>
       </div>
-    </div></div
-></template>
+    </div>
+    <div v-if="isFinished">Finished</div>
+  </div></template
+>
 
 <script>
 import OutlinedButton from '@/components/buttons/OutlinedButton'
+import { mapGetters, mapActions } from 'vuex'
+
 export default {
   name: 'GameScreen',
-  components: { OutlinedButton },
-  data() {
-    return {
-      score: 0,
-      questions: [
-        {
-          question: '1 + 1',
-          answers: [
-            { text: '1', correct: false },
-            { text: '2', correct: true },
-            { text: '3', correct: false },
-            { text: '4', correct: false }
-          ]
-        },
-        {
-          question: '1 + 1',
-          answers: [
-            { text: '1', correct: false },
-            { text: '2', correct: true },
-            { text: '3', correct: false },
-            { text: '4', correct: false }
-          ]
-        },
-        {
-          question: '1 + 1',
-          answers: [
-            { text: '1', correct: false },
-            { text: '2', correct: true },
-            { text: '3', correct: false },
-            { text: '4', correct: false }
-          ]
-        },
-        {
-          question: '1 + 2',
-          answers: [
-            { text: '1', correct: false },
-            { text: '2', correct: false },
-            { text: '3', correct: true },
-            { text: '4', correct: false }
-          ]
-        },
-        {
-          question: '2 + 2',
-          answers: [
-            { text: '1', correct: false },
-            { text: '2', correct: false },
-            { text: '3', correct: false },
-            { text: '4', correct: true }
-          ]
-        },
-        {
-          question: '1 + 0',
-          answers: [
-            { text: '1', correct: true },
-            { text: '2', correct: false },
-            { text: '3', correct: false },
-            { text: '4', correct: false }
-          ]
-        }
-      ],
-      answered: [],
-      questionIndex: 0
-    }
+  computed: {
+    ...mapGetters('questions', ['isFinished', 'score', 'question', 'answered'])
   },
+  components: { OutlinedButton },
   methods: {
-    answer: function (question, correct) {
-      if (this.answered.length === 10) {
-        this.answered.splice(0, 1)
-      }
-      if (correct) {
-        this.score++
-      }
-      const ans = { text: question, correct: correct }
-      this.answered.push(ans)
-
-      if (this.questionIndex >= this.questions.length - 1) {
-        alert('end')
-        return
-      }
-      this.questionIndex++
-    }
+    ...mapActions('questions', ['answer'])
   }
 }
 </script>
