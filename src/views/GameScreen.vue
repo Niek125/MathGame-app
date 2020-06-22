@@ -1,5 +1,18 @@
 <template>
   <div class="flexbox game-screen">
+    <div class="score-counter">
+      <div class="score">{{ score }}</div>
+      <div class="answered-wrapper">
+        <div
+          class="answered"
+          v-for="(data, index) in answered"
+          :key="'answered:' + index"
+          :class="data.correct ? 'correct' : 'incorrect'"
+        >
+          {{ data.text }}
+        </div>
+      </div>
+    </div>
     <div>
       <div class="flexbox question-wrapper">
         <div class="question">{{ questions[questionIndex].question }}</div>
@@ -8,9 +21,9 @@
         <outlined-button
           v-for="(data, index) in questions[questionIndex].answers"
           :key="'answer:' + index"
-          :text="data"
+          :text="data.text"
           :style="'grid-area: answer$index;'"
-          @click.native="answer"
+          @click.native="answer(questions[questionIndex].question, data.correct)"
         ></outlined-button>
       </div>
     </div></div
@@ -23,15 +36,56 @@ export default {
   components: { OutlinedButton },
   data() {
     return {
+      score: 0,
       questions: [
-        { question: '1 + 1', answers: ['1', '2', '3', '4'] },
-        { question: '2 + 2', answers: ['2', '3', '4', '5'] }
+        {
+          question: '1 + 1',
+          answers: [
+            { text: '1', correct: false },
+            { text: '2', correct: true },
+            { text: '3', correct: false },
+            { text: '4', correct: false }
+          ]
+        },
+        {
+          question: '1 + 2',
+          answers: [
+            { text: '1', correct: false },
+            { text: '2', correct: false },
+            { text: '3', correct: true },
+            { text: '4', correct: false }
+          ]
+        },
+        {
+          question: '2 + 2',
+          answers: [
+            { text: '1', correct: false },
+            { text: '2', correct: false },
+            { text: '3', correct: false },
+            { text: '4', correct: true }
+          ]
+        },
+        {
+          question: '1 + 0',
+          answers: [
+            { text: '1', correct: true },
+            { text: '2', correct: false },
+            { text: '3', correct: false },
+            { text: '4', correct: false }
+          ]
+        }
       ],
+      answered: [],
       questionIndex: 0
     }
   },
   methods: {
-    answer: function () {
+    answer: function (question, correct) {
+      if(this.answered.length === 3){
+        this.answered.splice(0, 1)
+      }
+      this.answered.push({text: question, correct: correct})
+
       if (this.questionIndex >= this.questions.length - 1) {
         alert('end')
         return
@@ -43,6 +97,31 @@ export default {
 </script>
 
 <style scoped>
+.score-counter {
+  position: absolute;
+  top: 0;
+  right: 0;
+  margin: 12px;
+}
+
+.score {
+  font-size: 5vh;
+  text-align: right;
+}
+
+.correct {
+  color: limegreen;
+}
+
+.incorrect {
+  color: red;
+}
+
+.answered {
+  text-align: right;
+  font-size: 2vh;
+}
+
 .game-screen {
   width: 100%;
   height: 100%;
