@@ -23,7 +23,9 @@
           :key="'answer:' + index"
           :text="data.text"
           :style="'grid-area: answer$index;'"
-          @click.native="answer(questions[questionIndex].question, data.correct)"
+          @click.native="
+            answer(questions[questionIndex].question, data.correct)
+          "
         ></outlined-button>
       </div>
     </div></div
@@ -81,10 +83,10 @@ export default {
   },
   methods: {
     answer: function (question, correct) {
-      if(this.answered.length === 3){
+      if (this.answered.length === 3) {
         this.answered.splice(0, 1)
       }
-      this.answered.push({text: question, correct: correct})
+      this.answered.push({ text: question, correct: correct })
 
       if (this.questionIndex >= this.questions.length - 1) {
         alert('end')
