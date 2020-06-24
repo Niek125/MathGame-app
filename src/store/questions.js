@@ -1,36 +1,11 @@
+import gql from 'graphql-tag'
+import apollo from '@/apollo'
+
 export default {
   namespaced: true,
   state: {
     score: 0,
-    questions: [
-      {
-        text: '1 + 1',
-        answers: [
-          { text: '1', isCorrect: false },
-          { text: '2', isCorrect: true },
-          { text: '3', isCorrect: false },
-          { text: '4', isCorrect: false }
-        ]
-      },
-      {
-        text: '2 + 1',
-        answers: [
-          { text: '1', isCorrect: false },
-          { text: '2', isCorrect: false },
-          { text: '3', isCorrect: true },
-          { text: '4', isCorrect: false }
-        ]
-      },
-      {
-        text: '2 + 2',
-        answers: [
-          { text: '1', isCorrect: false },
-          { text: '2', isCorrect: false },
-          { text: '3', isCorrect: false },
-          { text: '4', isCorrect: true }
-        ]
-      }
-    ],
+    questions: [],
     questionIndex: 0,
     answered: []
   },
@@ -44,12 +19,36 @@ export default {
       }
       state.answered.push(answer)
       state.questionIndex++
+    },
+    APPEND_QUESTIONS(state, questions) {
+      state.questions = state.questions.concat(questions)
     }
   },
   actions: {
-    answer({ commit }, { questionText, isCorrect }) {
+    loadQuestions({ commit }) {
+      apollo
+        .query({
+          query: gql(
+            '{\n' +
+              '  questions(random: true, amount: 10){\n' +
+              '    id\n' +
+              '    text\n' +
+              '    answer\n' +
+              '    falseAnswers\n' +
+              '  }\n' +
+              '}'
+          )
+        })
+        .then((res) => {
+          commit('APPEND_QUESTIONS', res.data.questions)
+        })
+    },
+    answer({ commit, state, dispatch }, { questionText, isCorrect }) {
       if (isCorrect) {
         commit('INCREMENT_SCORE')
+      }
+      if (state.questionIndex + 4 >= state.questions.length) {
+        dispatch('loadQuestions')
       }
       commit('ADD_ANSWER', { text: questionText, isCorrect: isCorrect })
     }

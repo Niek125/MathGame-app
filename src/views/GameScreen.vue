@@ -18,12 +18,15 @@
       </div>
       <div class="button-grid">
         <outlined-button
-          v-for="(data, index) in question.answers"
+          v-for="(data, index) in answers"
           :key="'answer:' + index"
-          :text="data.text"
+          :text="data"
           :style="'grid-area: answer$index;'"
           @click.native="
-            answer({ questionText: question.text, isCorrect: data.isCorrect })
+            answer({
+              questionText: question.text,
+              isCorrect: data === question.answer
+            })
           "
         ></outlined-button>
       </div>
@@ -39,11 +42,23 @@ import { mapGetters, mapActions } from 'vuex'
 export default {
   name: 'GameScreen',
   computed: {
-    ...mapGetters('questions', ['isFinished', 'score', 'question', 'answered'])
+    ...mapGetters('questions', ['isFinished', 'score', 'question', 'answered']),
+    answers: function () {
+      let answers = [...this.question.falseAnswers]
+      answers.push(this.question.answer)
+      for (let i = answers.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1))
+        ;[answers[i], answers[j]] = [answers[j], answers[i]]
+      }
+      return answers
+    }
   },
   components: { OutlinedButton },
   methods: {
-    ...mapActions('questions', ['answer'])
+    ...mapActions('questions', ['answer', 'loadQuestions'])
+  },
+  created() {
+    this.loadQuestions()
   }
 }
 </script>

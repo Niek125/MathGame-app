@@ -8,7 +8,7 @@
 export default {
   name: 'OutlinedButton',
   props: {
-    text: String
+    text: [Number, String]
   }
 }
 </script>
