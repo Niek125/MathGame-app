@@ -103,5 +103,5 @@ workflows:
       - load
       - deploy:
           requires:
-            - build
+            - load
           docker-push: v-0.<< pipeline.number >>
