@@ -22,6 +22,7 @@ jobs:
             - package.json
             - public
             - src
+            - sonar-project.properties
             - dockerfile
             - docker-compose.yml
             - .dockerignore
