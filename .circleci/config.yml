@@ -35,8 +35,8 @@ jobs:
     working_directory: ~/mathgame/app
     steps:
       - restore_cache:
-        keys:
-          - v1-dist-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
+          keys:
+            - v1-dist-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
   #      - run: npm run test
 
   scan:
@@ -45,8 +45,8 @@ jobs:
     working_directory: ~/mathgame/app
     steps:
       - restore_cache:
-        keys:
-          - v1-dist-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
+          keys:
+            - v1-dist-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
       - sonarcloud/scan
 
   deploy:
