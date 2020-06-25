@@ -78,9 +78,9 @@ workflows:
       - test:
           requires:
             - load
-      - scan
-        requires:
-          - test
+      - scan:
+          requires:
+            - test
       - deploy:
           requires:
             - test
