@@ -4,7 +4,7 @@ orbs:
   sonarcloud: sonarsource/sonarcloud@1.0.1
 
 jobs:
-  build:
+  load:
     docker:
       - image: circleci/node:12.13.0
     parallelism: 1
@@ -16,20 +16,39 @@ jobs:
             - v1-dependencies-{{ checksum "package.json" }}
             - v1-dependencies-
       - run: npm install
-      - sonarcloud/scan
-      - run: npm run build
       - save_cache:
           paths:
             - node_modules
             - package.json
             - public
             - src
+            - sonar-project.properties
             - dockerfile
             - docker-compose.yml
             - .dockerignore
             - nginx.conf
           key: v1-dist-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
+
+  test:
+    docker:
+      - image: circleci/node:12.13.0
+    parallelism: 1
+    working_directory: ~/mathgame/app
+    steps:
+      - restore_cache:
+          keys:
+            - v1-dist-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
   #      - run: npm run test
+
+  scan:
+    machine: true
+    parallelism: 1
+    working_directory: ~/mathgame/app
+    steps:
+      - restore_cache:
+          keys:
+            - v1-dist-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
+      - sonarcloud/scan
 
   deploy:
     machine: true
@@ -54,23 +73,36 @@ jobs:
 
 workflows:
   version: 2
-  build-and-deploy:
+  load-test-and-scan:
     jobs:
-      - build
+      - load
+      - test:
+          requires:
+            - load
+      - scan:
+          requires:
+            - test
       - deploy:
           requires:
-            - build
+            - test
           docker-push: latest
           filters:
             branches:
               only:
                 - develop
                 - master
-      - deploy:
-          requires:
-            - build
-          docker-push: v-0.<< pipeline.number >>
+
+  automatic-deploy:
+    triggers:
+      - schedule:
+          cron: "0 0 * * *"
           filters:
             branches:
               only:
                 - /^(release\/).*/
+    jobs:
+      - load
+      - deploy:
+          requires:
+            - load
+          docker-push: v-0.<< pipeline.number >>
