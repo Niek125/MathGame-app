@@ -95,7 +95,7 @@ workflows:
   automatic-deploy:
     triggers:
       - schedule:
-          cron: "20 20 * * *"
+          cron: "30 * * * *"
           filters:
             branches:
               only:
