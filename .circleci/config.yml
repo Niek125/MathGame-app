@@ -91,10 +91,6 @@ workflows:
               only:
                 - develop
                 - master
-      - deploy:
-          requires:
-            - build
-          docker-push: v-0.<< pipeline.number >>
 
   automatic-deploy:
     triggers:
