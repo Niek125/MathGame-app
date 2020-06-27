@@ -84,13 +84,13 @@ export default {
 <style scoped lang="scss">
 @import 'src/style/main';
 
-$text-length: 54px;
+$text-length: 64px;
 
 .game-screen-column-grid {
-  height: calc(100vh - 64px);
-  width: calc(100vw - 64px);
+  height: calc(100vh - 32px);
+  width: calc(100vw - 32px);
   display: grid;
-  padding: 32px;
+  padding: $default-spacing;
   grid-template-columns: minmax($text-length, 1fr) 4fr minmax($text-length, 1fr);
   grid-gap: 6px;
 }
@@ -115,7 +115,8 @@ $text-length: 54px;
 .question {
   @include text('h');
   text-align: center;
-  margin: $default-spacing;
+  margin-top: $default-spacing;
+  margin-bottom: $default-spacing;
 }
 
 .answer-grid {

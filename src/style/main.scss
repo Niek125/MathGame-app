@@ -3,7 +3,7 @@ $primary-darken: #07070a;
 $primary-lighten: #4a525a;
 $text: #ffffff;
 $neon: #00baff;
-$default-spacing: 32px;
+$default-spacing: 16px;
 
 @mixin flex-box {
   display: flex;
@@ -18,7 +18,7 @@ $default-spacing: 32px;
     font-size: 1.2rem;
   }
   @if ($size == 'h') {
-    font-size: 2.5rem;
+    font-size: 2.2rem;
   }
 }
 
