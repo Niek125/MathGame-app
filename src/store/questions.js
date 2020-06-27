@@ -63,8 +63,8 @@ export default {
     answered: (state) => {
       return state.answered
     },
-    isFinished: (state) => {
-      return state.questionIndex > state.questions.length - 1
+    hasQuestion: (state) => {
+      return state.questionIndex < state.questions.length
     }
   }
 }

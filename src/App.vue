@@ -12,17 +12,12 @@ export default {
 }
 </script>
 
-<style>
-.flexbox {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-</style>
+<style scoped lang="scss">
+@import 'src/style/main';
 
-<style scoped>
 #app {
   width: 100%;
   height: 100%;
+  background-color: $primary;
 }
 </style>

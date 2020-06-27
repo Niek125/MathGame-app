@@ -1,49 +1,63 @@
 <template>
-  <div class="flexbox game-screen">
-    <div class="score-counter" v-if="!isFinished">
+  <div class="game-screen-column-grid">
+    <div class="middle-row-grid">
       <div class="score">{{ score }}</div>
-      <div class="answered-wrapper">
-        <div
-          v-for="(data, index) in answered"
-          :key="'answered:' + index"
-          :class="['answered', data.isCorrect ? 'correct' : 'incorrect']"
-        >
-          {{ data.text }}
-        </div>
+      <div class="question" v-if="hasQuestion">{{ question.text }}</div>
+      <div class="answer-grid" ref="answerGrid">
+        <Card v-for="(data, index) in answers" :key="'answer:' + index"
+          ><button
+            class="answer"
+            @focus="selAnswer = index"
+            @keydown.right="setSelAnswer(1)"
+            @keydown.left="setSelAnswer(-1)"
+            @keydown.up="setSelAnswer(-2)"
+            @keydown.down="setSelAnswer(2)"
+            @click="
+              answer({
+                questionText: question.text,
+                isCorrect: data === question.answer
+              })
+            "
+          >
+            {{ data }}
+          </button>
+        </Card>
       </div>
     </div>
-    <div v-if="!isFinished">
-      <div class="flexbox question-wrapper">
-        <div class="question">{{ question.text }}</div>
-      </div>
-      <div class="button-grid">
-        <outlined-button
-          v-for="(data, index) in answers"
-          :key="'answer:' + index"
-          :text="data"
-          :style="'grid-area: answer$index;'"
-          @click.native="
-            answer({
-              questionText: question.text,
-              isCorrect: data === question.answer
-            })
-          "
-        ></outlined-button>
+    <div class="answered-wrapper">
+      <div
+        v-for="(data, index) in answered"
+        :key="'answered:' + index"
+        :class="['answered', data.isCorrect ? 'correct' : 'incorrect']"
+      >
+        {{ data.text }}
       </div>
     </div>
-    <div v-if="isFinished">Finished</div>
-  </div></template
->
+  </div>
+</template>
 
 <script>
-import OutlinedButton from '@/components/buttons/OutlinedButton'
+import Card from '@/components/Card'
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
   name: 'GameScreen',
+  data() {
+    return {
+      selAnswer: -1
+    }
+  },
   computed: {
-    ...mapGetters('questions', ['isFinished', 'score', 'question', 'answered']),
+    ...mapGetters('questions', [
+      'hasQuestion',
+      'score',
+      'question',
+      'answered'
+    ]),
     answers: function () {
+      if (!this.hasQuestion) {
+        return []
+      }
       let answers = [...this.question.falseAnswers]
       answers.push(this.question.answer)
       for (let i = answers.length - 1; i > 0; i--) {
@@ -53,9 +67,13 @@ export default {
       return answers
     }
   },
-  components: { OutlinedButton },
+  components: { Card },
   methods: {
-    ...mapActions('questions', ['answer', 'loadQuestions'])
+    ...mapActions('questions', ['answer', 'loadQuestions']),
+    setSelAnswer: function (dif) {
+      this.selAnswer = (this.selAnswer + dif + 4) % 4
+      this.$refs.answerGrid.children[this.selAnswer].children[0].focus()
+    }
   },
   created() {
     this.loadQuestions()
@@ -63,48 +81,82 @@ export default {
 }
 </script>
 
-<style scoped>
-.score-counter {
-  position: absolute;
-  top: 0;
-  right: 0;
-  margin: 12px;
+<style scoped lang="scss">
+@import 'src/style/main';
+
+$text-length: 54px;
+
+.game-screen-column-grid {
+  height: calc(100vh - 64px);
+  width: calc(100vw - 64px);
+  display: grid;
+  padding: 32px;
+  grid-template-columns: minmax($text-length, 1fr) 4fr minmax($text-length, 1fr);
+  grid-gap: 6px;
+}
+
+.answered-wrapper {
+  grid-column: 3/4;
+}
+
+.middle-row-grid {
+  display: grid;
+  height: 100%;
+  width: 100%;
+  grid-column: 2/3;
+  grid-template-rows: 1fr 1fr 3fr 1fr;
 }
 
 .score {
-  font-size: 5vh;
+  @include text('h');
+  text-align: center;
+}
+
+.question {
+  @include text('h');
+  text-align: center;
+  margin: $default-spacing;
+}
+
+.answer-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  grid-gap: 32px;
+}
+
+@mixin neon-effect {
+  background-color: $neon;
+  box-shadow: 0 0 $default-spacing $neon;
+}
+
+.answer {
+  @include text();
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: $default-spacing;
+  height: 100%;
+  width: 100%;
+  transition: background-color 400ms ease-in-out;
+  &:focus {
+    @include neon-effect;
+  }
+  &:hover {
+    @include neon-effect;
+  }
+}
+
+.answered {
+  @include text;
   text-align: right;
 }
 
 .correct {
-  color: limegreen;
+  color: chartreuse;
 }
 
 .incorrect {
   color: red;
-}
-
-.answered {
-  text-align: right;
-  font-size: 2vh;
-}
-
-.game-screen {
-  width: 100%;
-  height: 100%;
-}
-
-.question {
-  font-size: 10vh;
-}
-
-.question-wrapper {
-  margin: 12px;
-}
-
-.button-grid {
-  display: grid;
-  grid-template-columns: auto auto;
-  grid-gap: 12px;
 }
 </style>
